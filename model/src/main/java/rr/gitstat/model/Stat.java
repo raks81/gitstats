@@ -21,11 +21,7 @@ public class Stat {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long statId;
-
-	@Audited
 	private Integer stars;
-
-	@Audited
 	private Integer watchers;
 
 	@Temporal(TemporalType.TIMESTAMP)
