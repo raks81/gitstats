@@ -20,7 +20,7 @@ public class Repo {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long repoId;
 
-	private Long githubId;
+	private Long githubRepoId;
 	private String name;
 	private String fullName;
 
