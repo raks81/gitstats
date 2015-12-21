@@ -3,6 +3,7 @@ package rr.gitstat.model;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -27,9 +28,9 @@ public class Repo {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long repoId;
-	
+
 	private Long githubRepoId;
-	
+
 	private String name;
 	private String fullName;
 
@@ -44,8 +45,10 @@ public class Repo {
 	@JoinColumn(name = "OWNER", nullable = false, updatable = true)
 	private User owner;
 
-	@OneToMany
+	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "REPO_COLLABORATORS")
 	private List<User> collaborators;
 
+	@OneToMany(cascade = CascadeType.ALL)
+	private List<Stat> stats;
 }
