@@ -13,10 +13,13 @@ import javax.persistence.TemporalType;
 import org.hibernate.envers.Audited;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
 @Entity
-@Table(name = "STAT")
+@Table(name = "REPO_STAT")
+@Getter
+@Setter
 public class Stat {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
