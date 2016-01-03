@@ -1,4 +1,4 @@
-package rr.gitstat.model;
+package rr.gitstat.model.entity;
 
 import java.util.Date;
 import java.util.List;
@@ -24,7 +24,7 @@ import lombok.Setter;
 @Table(name = "GITHUB_REPO")
 @Getter
 @Setter
-public class Repo {
+public class GitstatRepo {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long repoId;
@@ -43,12 +43,12 @@ public class Repo {
 
 	@OneToOne
 	@JoinColumn(name = "OWNER", nullable = false, updatable = true)
-	private User owner;
+	private GitstatUser owner;
 
 	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "REPO_COLLABORATORS")
-	private List<User> collaborators;
+	private List<GitstatUser> collaborators;
 
 	@OneToMany(cascade = CascadeType.ALL)
-	private List<Stat> stats;
+	private List<GitstatStatistic> stats;
 }

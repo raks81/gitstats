@@ -1,0 +1,13 @@
+----------------------------------------------------------------
+Tue Dec 29 19:09:11 IST 2015:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.12.1.1 - (1704137): instance a816c00e-0151-edf6-c604-00000e69a488 
+on database directory /private/tmp/gitstatsDb with class loader sun.misc.Launcher$AppClassLoader@12a3a380 
+Loaded from file:/Users/rakrao/.m2/repository/org/apache/derby/derby/10.12.1.1/derby-10.12.1.1.jar
+java.vendor=Oracle Corporation
+java.runtime.version=1.8.0_60-b27
+user.dir=/Users/rakrao/workspace/studio/mean/git-stats/model
+os.name=Mac OS X
+os.arch=x86_64
+os.version=10.10.5
+derby.system.home=null
+Database Class Loader started - derby.database.classpath=''

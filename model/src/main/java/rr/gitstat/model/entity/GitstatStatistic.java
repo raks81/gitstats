@@ -1,4 +1,4 @@
-package rr.gitstat.model;
+package rr.gitstat.model.entity;
 
 import java.util.Date;
 
@@ -18,7 +18,7 @@ import lombok.Setter;
 @Table(name = "REPO_STAT")
 @Getter
 @Setter
-public class Stat {
+public class GitstatStatistic {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long statId;
@@ -29,5 +29,5 @@ public class Stat {
 	private Date statDate;
 	
 	@ManyToOne
-	private Repo repo;
+	private GitstatRepo repo;
 }

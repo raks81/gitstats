@@ -1,4 +1,4 @@
-package rr.gitstat.model.test;
+package rr.gitstat.model.entity.test;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -12,11 +12,11 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import rr.gitstat.model.Repo;
-import rr.gitstat.model.Stat;
-import rr.gitstat.model.User;
+import rr.gitstat.model.entity.GitstatRepo;
+import rr.gitstat.model.entity.GitstatStatistic;
+import rr.gitstat.model.entity.GitstatUser;
 
-public class TestRepoEntity {
+public class GitstatEntityTest {
 
 	private EntityManagerFactory entityManagerFactory;
 
@@ -28,20 +28,20 @@ public class TestRepoEntity {
 		EntityManager entityManager = entityManagerFactory.createEntityManager();
 		entityManager.getTransaction().begin();
 
-		User rr1 = new User();
+		GitstatUser rr1 = new GitstatUser();
 		rr1.setGithubId(111111L);
 		rr1.setLogin("raks81");
 		rr1.setType("User");
 
 		entityManager.persist(rr1);
 
-		User rr2 = new User();
+		GitstatUser rr2 = new GitstatUser();
 		rr2.setGithubId(111112L);
 		rr2.setLogin("raks82");
 		rr2.setType("User");
 		entityManager.persist(rr2);
 
-		User rr3 = new User();
+		GitstatUser rr3 = new GitstatUser();
 		rr3.setGithubId(111113L);
 		rr3.setLogin("raks83");
 		rr3.setType("User");
@@ -59,19 +59,19 @@ public class TestRepoEntity {
 		entityManager.getTransaction().begin();
 
 		// Get the users
-		User rr1 = entityManager.createQuery("from User where login = 'raks81' ", User.class).getSingleResult();
+		GitstatUser rr1 = entityManager.createQuery("from GitstatUser where login = 'raks81' ", GitstatUser.class).getSingleResult();
 		Assert.assertNotNull(rr1);
 		Assert.assertEquals("null", "raks81", rr1.getLogin());
-		User rr2 = entityManager.createQuery("from User where login = 'raks82' ", User.class).getSingleResult();
+		GitstatUser rr2 = entityManager.createQuery("from GitstatUser where login = 'raks82' ", GitstatUser.class).getSingleResult();
 		Assert.assertNotNull(rr2);
 		Assert.assertEquals("null", "raks82", rr2.getLogin());
 
-		User rr3 = entityManager.createQuery("from User where login = 'raks83' ", User.class).getSingleResult();
+		GitstatUser rr3 = entityManager.createQuery("from GitstatUser where login = 'raks83' ", GitstatUser.class).getSingleResult();
 		Assert.assertNotNull(rr3);
 		Assert.assertEquals("null", "raks83", rr3.getLogin());
 
 		// Create repo
-		Repo repo = new Repo();
+		GitstatRepo repo = new GitstatRepo();
 		repo.setGithubRepoId(1111111l);
 		repo.setCreatedDate(Calendar.getInstance().getTime());
 		repo.setName("test-repo");
@@ -79,13 +79,13 @@ public class TestRepoEntity {
 		repo.setOwner(rr1);
 
 		// Add collaborators
-		repo.setCollaborators(new ArrayList<User>());
+		repo.setCollaborators(new ArrayList<GitstatUser>());
 		repo.getCollaborators().add(rr1);
 		repo.getCollaborators().add(rr2);
 		repo.getCollaborators().add(rr3);
 
 		// Add a few stats
-		Stat stat1 = new Stat();
+		GitstatStatistic stat1 = new GitstatStatistic();
 		stat1.setRepo(repo);
 		stat1.setStars(403);
 		stat1.setWatchers(503);
@@ -93,13 +93,13 @@ public class TestRepoEntity {
 		yesterday.add(Calendar.DATE, -1);
 		stat1.setStatDate(yesterday.getTime());
 
-		Stat stat2 = new Stat();
+		GitstatStatistic stat2 = new GitstatStatistic();
 		stat2.setRepo(repo);
 		stat2.setStars(405);
 		stat2.setWatchers(506);
 		stat2.setStatDate(Calendar.getInstance().getTime());
 
-		repo.setStats(new ArrayList<Stat>());
+		repo.setStats(new ArrayList<GitstatStatistic>());
 		repo.getStats().add(stat1);
 		repo.getStats().add(stat2);
 
@@ -111,8 +111,8 @@ public class TestRepoEntity {
 		// Read repo data
 		entityManager = entityManagerFactory.createEntityManager();
 		entityManager.getTransaction().begin();
-		List<Repo> repos = entityManager.createQuery("from Repo", Repo.class).getResultList();
-		for (Repo readRepo : repos) {
+		List<GitstatRepo> repos = entityManager.createQuery("from GitstatRepo", GitstatRepo.class).getResultList();
+		for (GitstatRepo readRepo : repos) {
 			// Check repo
 			Assert.assertNotNull(readRepo);
 			Assert.assertEquals("null", "rr/test-repo", readRepo.getFullName());

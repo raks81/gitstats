@@ -1,4 +1,4 @@
-package rr.gitstat.model;
+package rr.gitstat.model.entity;
 
 import java.util.List;
 
@@ -16,7 +16,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "GITHUB_USER")
-public class User {
+public class GitstatUser {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long userId;
@@ -26,5 +26,5 @@ public class User {
 	private String type;
 	
 	@ManyToMany(mappedBy="collaborators")
-	private List<Repo> collaboratingRepos;
+	private List<GitstatRepo> collaboratingRepos;
 }
