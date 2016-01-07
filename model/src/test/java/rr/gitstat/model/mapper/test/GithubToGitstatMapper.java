@@ -2,8 +2,6 @@ package rr.gitstat.model.mapper.test;
 
 import org.junit.Test;
 
-import rr.gitstat.model.github.Repo;
-
 public class GithubToGitstatMapper {
 
 
