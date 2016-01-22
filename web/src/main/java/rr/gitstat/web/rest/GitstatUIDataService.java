@@ -24,6 +24,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import rr.gitstat.model.github.Repo;
 import rr.gitstat.model.github.RepoCommitStat;
+import rr.gitstat.model.github.RepoParticipation;
 import rr.gitstat.model.ui.Cell;
 import rr.gitstat.model.ui.Data;
 import rr.gitstat.model.ui.Row;
@@ -50,30 +51,39 @@ public class GitstatUIDataService {
 		UIDataModel dataModel = new UIDataModel();
 
 		Map<String, Repo> repos = new HashMap<String, Repo>();
+		// Set repo
+		for (String project : projectsList) {
+			if (repos.get(project) == null) {
+				repos.put(project, getRepo(project));
+			}
+		}
+
+		// Add description
+		addRepoTextRow(projectsList, dataModel, repos, "text", "Description", "getDescription");
+
+		// Add Homepage
+		addRepoTextRow(projectsList, dataModel, repos, "link", "Homepage", "getHomePage");
+
+		// Language
+		addRepoTextRow(projectsList, dataModel, repos, "text", "Language", "getLanguage");
+
+		// Created at
+		addRepoTextRow(projectsList, dataModel, repos, "text", "Created", "getCreatedAt");
+
+		// Updated at
+		addRepoTextRow(projectsList, dataModel, repos, "text", "Updated", "getUpdatedAt");
+
+		// Clone URL
+		addRepoTextRow(projectsList, dataModel, repos, "link", "Clone URL", "getCloneUrl");
+
+		// Fork Count
+		addRepoTextRow(projectsList, dataModel, repos, "number", "Forks", "getForksCount");
 
 		// Add stars
-		Row starsRow = new Row();
-		starsRow.getCells().add(createTextCell("title", "Stars"));
-		for (String project : projectsList) {
-			if (repos.get(project) == null) {
-				repos.put(project, getRepo(project));
-			}
-			starsRow.getCells()
-					.add(createTextCell("number", Integer.toString(repos.get(project).getStargazersCount())));
-		}
-		dataModel.getRows().add(starsRow);
+		addRepoTextRow(projectsList, dataModel, repos, "number", "Stars", "getStargazersCount");
 
 		// Add watchers
-		Row watchersRow = new Row();
-		watchersRow.getCells().add(createTextCell("title", "Watchers"));
-		for (String project : projectsList) {
-			if (repos.get(project) == null) {
-				repos.put(project, getRepo(project));
-			}
-			watchersRow.getCells()
-					.add(createTextCell("number", Integer.toString(repos.get(project).getSubscribersCount())));
-		}
-		dataModel.getRows().add(watchersRow);
+		addRepoTextRow(projectsList, dataModel, repos, "number", "Watchers", "getSubscribersCount");
 
 		// Add commits
 		Row commitsRow = new Row();
@@ -83,8 +93,33 @@ public class GitstatUIDataService {
 		}
 		dataModel.getRows().add(commitsRow);
 
+		// Add participation
+		Row participationRow = new Row();
+		participationRow.getCells().add(createTextCell("title", "Participation"));
+		for (String project : projectsList) {
+			participationRow.getCells().add(createDonutCell(getRepoParticipation(project), "Participation"));
+		}
+		dataModel.getRows().add(participationRow);
+
 		ObjectMapper mapper = new ObjectMapper();
 		return mapper.writeValueAsString(dataModel);
+	}
+
+	private void addRepoTextRow(List<String> projectsList, UIDataModel dataModel, Map<String, Repo> repos, String type,
+			String title, String getter) {
+		Row row = new Row();
+		row.getCells().add(createTextCell("title", title));
+		for (String project : projectsList) {
+			try {
+				row.getCells()
+						.add(createTextCell(type, Repo.class.getMethod(getter).invoke(repos.get(project)).toString()));
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				System.out.println(e.getMessage());
+				row.getCells().add(new Cell());
+			}
+		}
+		dataModel.getRows().add(row);
 	}
 
 	private Cell createTextCell(String type, String value) {
@@ -110,6 +145,28 @@ public class GitstatUIDataService {
 
 		tsCell.setData(data);
 		tsCell.setType("timeseries");
+
+		return tsCell;
+	}
+
+	private Cell createDonutCell(Map<String, String> valuesMap, String name) {
+		List<List<String>> valuesList = new ArrayList<List<String>>();
+		for (String key : valuesMap.keySet()) {
+			List<String> t = new ArrayList<String>();
+			t.add(key);
+			t.add(valuesMap.get(key));
+			valuesList.add(t);
+		}
+		TsValues tsValues = new TsValues();
+		tsValues.setColumns(valuesList);
+
+		Data data = new Data();
+		data.setValue(name);
+		data.setTsValues(tsValues);
+		Cell tsCell = new Cell();
+
+		tsCell.setData(data);
+		tsCell.setType("donut");
 
 		return tsCell;
 	}
@@ -175,5 +232,31 @@ public class GitstatUIDataService {
 			commits.get(1).add(Integer.toString(stat.getTotal()));
 		}
 		return commits;
+	}
+
+	public Map<String, String> getRepoParticipation(String project)
+			throws JsonParseException, JsonMappingException, IOException {
+		GithubClient client = new GithubClient();
+		StringTokenizer st = new StringTokenizer(project, "/");
+
+		Map<String, String> params = new LinkedHashMap<>();
+		params.put("owner", st.nextToken());
+		params.put("repo", st.nextToken());
+		RepoParticipation stats = client.makeGithubAPICall(GithubClient.REPO_PARTICIPATION_API, params,
+				RepoParticipation.class);
+		Integer totalOwner = 0;
+		Integer total = 0;
+		for (Integer i : stats.getOwner()) {
+			totalOwner += i;
+		}
+		for (Integer i : stats.getAll()) {
+			total += i;
+		}
+
+		Long totalOwnerPercentage = Math.round(((double) totalOwner / (double) total) * 100);
+		Map<String, String> participation = new HashMap<>();
+		participation.put("Owner", Long.toString(totalOwnerPercentage));
+		participation.put("Others", Long.toString(100 - totalOwnerPercentage));
+		return participation;
 	}
 }

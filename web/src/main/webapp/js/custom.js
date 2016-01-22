@@ -24,9 +24,6 @@ var loadData = function() {
 		return response;
 	})();
 
-	// convert string to JSON
-	// response = $.parseJSON(response);
-
 	$(function() {
 		var trHtml = '';
 		$.each(response.rows, function(i, row) {
@@ -37,7 +34,12 @@ var loadData = function() {
 							+ '</strong></td>';
 				} else if (cell.type == 'number') {
 					trHtml += '<td>' + $.number(cell.data.value) + '</td>';
-				} else if (cell.type == 'timeseries') {
+				} else if (cell.type == 'text') {
+					trHtml += '<td>' + cell.data.value + '</td>';
+				} else if (cell.type == 'link') {
+					trHtml += '<td><a href="' + cell.data.value + '">'
+							+ cell.data.value + '<a/></td>';
+				} else if (cell.type == 'timeseries' || cell.type == 'donut') {
 					trHtml += '<td>' + '<div id="chart_' + i + '_' + j + '"/>'
 							+ '</td>';
 				}
@@ -60,7 +62,7 @@ var loadData = function() {
 						},
 						bar : {
 							width : {
-								ratio : 0.08
+								ratio : 0.065
 							}
 						},
 						color : {
@@ -102,6 +104,19 @@ var loadData = function() {
 								}
 							}
 						}
+					});
+				} else if (cell.type == 'donut') {
+					cell.data.ts_values.type = 'donut';
+					var chart = c3.generate({
+						bindto : "#chart_" + i + '_' + j,
+						size : {
+							height : 180,
+							width : 360
+						},
+						legend : {
+							show : true
+						},
+						data : cell.data.ts_values,
 					});
 				}
 			});
