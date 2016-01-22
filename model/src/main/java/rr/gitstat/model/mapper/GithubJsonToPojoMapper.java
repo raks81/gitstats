@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import rr.gitstat.model.github.Repo;
 import rr.gitstat.model.github.RepoCommitStat;
+import rr.gitstat.model.github.RepoParticipation;
 
 public class GithubJsonToPojoMapper {
 
@@ -18,6 +19,13 @@ public class GithubJsonToPojoMapper {
 		return repoCommitStats;
 	}
 
+	public <T> T mapJsonToPojo(String json, Class<T> type) 
+			throws JsonParseException, JsonMappingException, IOException {
+		ObjectMapper mapper = new ObjectMapper();
+		T pojo = mapper.readValue(json, type);
+		return pojo;
+	}
+	
 	public Repo mapRepoJsonToPojo(String repoJson) throws JsonParseException, JsonMappingException, IOException {
 		ObjectMapper mapper = new ObjectMapper();
 		Repo repo = mapper.readValue(repoJson, Repo.class);

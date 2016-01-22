@@ -1,8 +1,8 @@
 package rr.gitstat.web;
 
 import javax.ws.rs.ApplicationPath;
-
-@ApplicationPath("rest")
+//
+//@ApplicationPath("rest")
 public class GitstatApplication {
 
 }

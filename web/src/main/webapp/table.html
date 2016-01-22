@@ -45,8 +45,9 @@
 	</nav>
 
 	<div class="container">
-		<img src="/gitstat/img/loading.gif" id="loading-indicator"
-			style="display: none" />
+		<img
+			src="https://assets-cdn.github.com/images/spinners/octocat-spinner-128.gif"
+			id="loading-indicator" style="display: none" />
 		<form role="form">
 			<table id="compare_table" class="table table-bordered table-striped">
 				<thead>
@@ -55,20 +56,26 @@
 							<!--  button class="btn btn-sm btn-primary" type="button" id="b_stats" onclick="loadData()">Get Stats!</button -->
 						</td>
 						<td><input type="text" placeholder="owner/repo"
-							class="form-control" onchange="loadData()" /></td>
+							class="form-control" id="p1" /></td>
 						<td><input type="text" placeholder="owner/repo"
-							class="form-control" onchange="loadData()" /></td>
+							class="form-control" id="p2" /></td>
 					</tr>
 				</thead>
 				<tbody>
 				</tbody>
 			</table>
+			<div class="text-center">
+				<button class="btn btn-sm btn-primary" type="button" id="b_stats">Get
+					Stats!</button>
+			</div>
 		</form>
 	</div>
 
 	<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 	<script
 		src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<script type="text/javascript"
+		src="https://raw.githubusercontent.com/customd/jquery-number/master/jquery.number.js"></script>
 	<!-- Include all compiled plugins (below), or include individual files as needed -->
 	<script src="js/bootstrap.min.js"></script>
 	<script src="js/custom.js"></script>

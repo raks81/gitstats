@@ -2,20 +2,19 @@ package rr.gitstat.web.rest;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
-import javax.ws.rs.MatrixParam;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -39,7 +38,9 @@ public class GitstatUIDataService {
 	@Consumes("text/plain")
 	@Produces("application/json")
 	@Path("data")
-	public String data(@MatrixParam("p") String projects) throws JsonParseException, JsonMappingException, IOException {
+	public String data(@QueryParam("p") String projects) throws JsonParseException, JsonMappingException, IOException {
+
+		// projects="raks81/go-acousticid,joelittlejohn/jsonschema2pojo";
 		StringTokenizer st = new StringTokenizer(projects, ",");
 		List<String> projectsList = new ArrayList<String>();
 		while (st.hasMoreElements()) {
@@ -113,17 +114,31 @@ public class GitstatUIDataService {
 		return tsCell;
 	}
 
-	private Repo getRepo(String project) throws JsonParseException, JsonMappingException, IOException {
-		GithubClient client = new GithubClient();
-		StringTokenizer st = new StringTokenizer(project, "/");
-		return client.getRepo(st.nextToken(), st.nextToken());
+	private Repo getRepo(String project) {
+		try {
+			GithubClient client = new GithubClient();
+			StringTokenizer st = new StringTokenizer(project, "/");
+			Map<String, String> params = new LinkedHashMap<>();
+			params.put("owner", st.nextToken());
+			params.put("repo", st.nextToken());
+			return client.makeGithubAPICall(GithubClient.REPO_INFO_API, params, Repo.class);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	public List<List<String>> getRepoCommitDailyStat(String project)
 			throws JsonParseException, JsonMappingException, IOException {
 		GithubClient client = new GithubClient();
 		StringTokenizer st = new StringTokenizer(project, "/");
-		RepoCommitStat[] stats = client.findCommitActivity(st.nextToken(), st.nextToken());
+
+		Map<String, String> params = new LinkedHashMap<>();
+		params.put("owner", st.nextToken());
+		params.put("repo", st.nextToken());
+		RepoCommitStat[] stats = client.makeGithubAPICall(GithubClient.COMMIT_ACTIVITY_API, params,
+				RepoCommitStat[].class);
 		List<List<String>> commits = new ArrayList<List<String>>();
 		commits.add(new ArrayList<String>());
 		commits.add(new ArrayList<String>());
@@ -139,12 +154,17 @@ public class GitstatUIDataService {
 		}
 		return commits;
 	}
-	
+
 	public List<List<String>> getRepoCommitWeeklyStat(String project)
 			throws JsonParseException, JsonMappingException, IOException {
 		GithubClient client = new GithubClient();
 		StringTokenizer st = new StringTokenizer(project, "/");
-		RepoCommitStat[] stats = client.findCommitActivity(st.nextToken(), st.nextToken());
+
+		Map<String, String> params = new LinkedHashMap<>();
+		params.put("owner", st.nextToken());
+		params.put("repo", st.nextToken());
+		RepoCommitStat[] stats = client.makeGithubAPICall(GithubClient.COMMIT_ACTIVITY_API, params,
+				RepoCommitStat[].class);
 		List<List<String>> commits = new ArrayList<List<String>>();
 		commits.add(new ArrayList<String>());
 		commits.add(new ArrayList<String>());
