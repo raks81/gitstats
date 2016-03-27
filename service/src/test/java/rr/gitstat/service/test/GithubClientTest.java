@@ -38,10 +38,15 @@ public class GithubClientTest {
 
 	@Test
 	public void testGetNonExistingUser() throws JsonParseException, JsonMappingException, IOException {
-		Map<String, String> params = new LinkedHashMap<>();
-		params.put("username", "someuser-that-doest-exist-007");
-		User user = client.makeGithubAPICall(GithubClient.USER_INFO_API, params, User.class);
-		Assert.assertNull(user);
+		try {
+			Map<String, String> params = new LinkedHashMap<>();
+			params.put("username", "someuser-that-doest-exist-007");
+			client.makeGithubAPICall(GithubClient.USER_INFO_API, params, User.class);
+			Assert.assertTrue(false);
+		} catch (RuntimeException e) {
+			// TODO Auto-generated catch block
+			Assert.assertTrue(e.getMessage().contains("404"));
+		}
 	}
 
 	@Test
@@ -52,13 +57,13 @@ public class GithubClientTest {
 		Repo repo = client.makeGithubAPICall(GithubClient.REPO_INFO_API, params, Repo.class);
 		Assert.assertNotNull(repo);
 		Assert.assertEquals(repo.getName(), "go-acousticid");
-		
+
 		params.put("owner", "antirez");
 		params.put("repo", "redis");
 		Repo repo2 = client.makeGithubAPICall(GithubClient.REPO_INFO_API, params, Repo.class);
 		Assert.assertNotNull(repo2);
 		Assert.assertEquals(repo2.getName(), "redis");
-		
+
 	}
 
 	@Test
