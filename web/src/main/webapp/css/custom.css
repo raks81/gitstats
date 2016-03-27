@@ -11,12 +11,12 @@ p {
 	font-family: 'Ubuntu', sans-serif;
 }
 
-h1	{
+h1 {
 	font-family: 'Oswald', sans-serif;
 }
 
-h3 {
-	font-family: 'Oswald', sans-serif;
+h4 {
+    font-family: 'Ubuntu', sans-serif;
 }
 
 caption {
@@ -24,15 +24,25 @@ caption {
 }
 
 .table td {
-   text-align: center;   
+	text-align: center;
 }
 
 #loading-indicator {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 64px;
-  height: 64px;
-  margin-left: -32px;
-  margin-top: -32px;
-  border: 0;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	width: 64px;
+	height: 64px;
+	margin-left: -32px;
+	margin-top: -32px;
+	border: 0;
+}
+
+#brand-image {
+	padding: 5px 5px;
+}
+
+.navbar-brand {
+	font-family: 'Oswald', sans-serif;
+	font-size: 25px;
+}
