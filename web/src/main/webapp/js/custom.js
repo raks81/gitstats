@@ -36,6 +36,8 @@ var loadData = function() {
 					trHtml += '<td>' + $.number(cell.data.value) + '</td>';
 				} else if (cell.type == 'text') {
 					trHtml += '<td>' + cell.data.value + '</td>';
+				} else if (cell.type == 'date') {
+					trHtml += '<td>' + moment(cell.data.value).format('DD-MMM-YYYY') + '</td>';
 				} else if (cell.type == 'link') {
 					trHtml += '<td><a href="' + cell.data.value + '">'
 							+ cell.data.value + '<a/></td>';

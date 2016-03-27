@@ -7,6 +7,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.logging.Logger;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -35,6 +36,8 @@ import rr.gitstat.service.github.GithubClient;
 @Path("ui")
 public class GitstatUIDataService {
 
+	private static final Logger logger = Logger.getLogger(GitstatUIDataService.class.getName());
+
 	@GET
 	@Consumes("text/plain")
 	@Produces("application/json")
@@ -62,22 +65,22 @@ public class GitstatUIDataService {
 		addRepoTextRow(projectsList, dataModel, repos, "text", "Description", "getDescription");
 
 		// Add Homepage
-		addRepoTextRow(projectsList, dataModel, repos, "link", "Home page", "getHomePage");
+		addRepoTextRow(projectsList, dataModel, repos, "link", "Home page", "getHomepage");
 
 		// Add Github page
 		addRepoTextRow(projectsList, dataModel, repos, "link", "Github page", "getHtmlUrl");
 
 		// Clone URL
 		addRepoTextRow(projectsList, dataModel, repos, "text", "Clone URL", "getCloneUrl");
-		
+
 		// Language
 		addRepoTextRow(projectsList, dataModel, repos, "text", "Language", "getLanguage");
 
 		// Created at
-		addRepoTextRow(projectsList, dataModel, repos, "text", "Created", "getCreatedAt");
+		addRepoTextRow(projectsList, dataModel, repos, "date", "Created", "getCreatedAt");
 
 		// Updated at
-		addRepoTextRow(projectsList, dataModel, repos, "text", "Updated", "getUpdatedAt");
+		addRepoTextRow(projectsList, dataModel, repos, "date", "Updated", "getUpdatedAt");
 
 		// Fork Count
 		addRepoTextRow(projectsList, dataModel, repos, "number", "Forks", "getForksCount");
@@ -181,8 +184,9 @@ public class GitstatUIDataService {
 			Map<String, String> params = new LinkedHashMap<>();
 			params.put("owner", st.nextToken());
 			params.put("repo", st.nextToken());
+			logger.info("Fetching stats for repo: " + project);
 			return client.makeGithubAPICall(GithubClient.REPO_INFO_API, params, Repo.class);
-		} catch (Exception e) {
+		} catch (Exception e) {	
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;

@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -16,7 +17,6 @@ import javax.ws.rs.core.Response;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.google.common.base.Joiner;
 
 import rr.gitstat.model.mapper.GithubJsonToPojoMapper;
 import rr.gitstat.service.github.cache.Cache;
@@ -24,6 +24,8 @@ import rr.gitstat.service.github.cache.GitHubCacheProvider;
 import rr.gitstat.service.github.cache.GuavaGithubCacheProvider;
 
 public class GithubClient {
+
+	private static final Logger logger = Logger.getLogger(GithubClient.class.getName());
 
 	// API Keys
 	public static final String REPO_INFO_API = "https://api.github.com/repos/{owner}/{repo}";
@@ -39,7 +41,7 @@ public class GithubClient {
 
 	private boolean useCache = true;
 
-	private static String GITHUB_API_TOKEN = "04b2f25d943a3a125e230d9b30d0764f7116e94d";
+	private static String GITHUB_API_TOKEN = "4cf819212f3ceb37141490ea8b3c4a045d2e1073";
 	private Client client;
 
 	public GithubClient() {
@@ -50,38 +52,6 @@ public class GithubClient {
 		webTargets.put(COMMIT_ACTIVITY_API, client.target(COMMIT_ACTIVITY_API));
 		webTargets.put(REPO_PARTICIPATION_API, client.target(REPO_PARTICIPATION_API));
 	}
-
-	// public String findUserByUsername(String username) {
-	// Response res = userTarget.resolveTemplate("username",
-	// username).request("application/json")
-	// .header(HttpHeaders.AUTHORIZATION, "token " +
-	// System.getenv("GITHUB_API_TOKEN")).get();
-	// return res.readEntity(String.class);
-	// }
-	//
-	// public String findRepositoriesByUser(String username) {
-	// Response res = userRepoTarget.resolveTemplate("username",
-	// username).request("application/json")
-	// .header(HttpHeaders.AUTHORIZATION, "token " +
-	// System.getenv("GITHUB_API_TOKEN")).get();
-	// return res.readEntity(String.class);
-	// }
-
-	// public Repo getRepo(String owner, String repo) throws JsonParseException,
-	// JsonMappingException, IOException {
-	// String repoCacheKey = owner + "/" + repo;
-	// if (useCache && repoCache.get(repoCacheKey) == null) {
-	// Response res = repoTarget.resolveTemplate("owner",
-	// owner).resolveTemplate("repo", repo)
-	// .request("application/json").header(HttpHeaders.AUTHORIZATION, "token " +
-	// GITHUB_API_TOKEN)
-	// .header(HttpHeaders.USER_AGENT, "User-Agent: Gitstat").get();
-	// String json = res.readEntity(String.class);
-	// Repo repoPojo = new GithubJsonToPojoMapper().mapRepoJsonToPojo(json);
-	// repoCache.put(repoCacheKey, repoPojo);
-	// }
-	// return repoCache.get(repoCacheKey);
-	// }
 
 	public <T> T makeGithubAPICall(String apiKey, Map<String, String> params, Class<T> type)
 			throws JsonParseException, JsonMappingException, IOException {
@@ -94,6 +64,7 @@ public class GithubClient {
 		}
 
 		if (useCache && apiCache.get(cacheKey) == null) {
+			logger.info("Fetching stats from remote for: " + apiKey);
 			String json = "[]";
 			for (int i = 0; i < 3; i++) {
 				Response res = null;
@@ -111,6 +82,9 @@ public class GithubClient {
 						json = res.readEntity(String.class);
 						apiCache.put(cacheKey, new GithubJsonToPojoMapper().mapJsonToPojo(json, type));
 						break;
+					} else {
+						throw new RuntimeException(
+								"Call to github failed: " + res.getStatus() + " - " + res.toString());
 					}
 				} finally {
 					if (res != null) {
@@ -139,7 +113,7 @@ public class GithubClient {
 		List<String> sortedParams = new ArrayList(params.keySet());
 		Collections.sort(sortedParams);
 		StringBuilder sb = new StringBuilder();
-		for(String key : sortedParams) {
+		for (String key : sortedParams) {
 			sb.append(params.get(key)).append("/");
 		}
 		return sb.toString();
