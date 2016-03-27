@@ -45,6 +45,9 @@ public class GitstatUIDataService {
 	public String data(@QueryParam("p") String projects) throws JsonParseException, JsonMappingException, IOException {
 
 		// projects="raks81/go-acousticid,joelittlejohn/jsonschema2pojo";
+		projects = projects.replaceAll(" ", "").replaceAll("https://github.com/", "").replaceAll("http://github.com/",
+				"");
+
 		StringTokenizer st = new StringTokenizer(projects, ",");
 		List<String> projectsList = new ArrayList<String>();
 		while (st.hasMoreElements()) {
@@ -186,7 +189,7 @@ public class GitstatUIDataService {
 			params.put("repo", st.nextToken());
 			logger.info("Fetching stats for repo: " + project);
 			return client.makeGithubAPICall(GithubClient.REPO_INFO_API, params, Repo.class);
-		} catch (Exception e) {	
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
