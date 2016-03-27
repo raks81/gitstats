@@ -62,8 +62,14 @@ public class GitstatUIDataService {
 		addRepoTextRow(projectsList, dataModel, repos, "text", "Description", "getDescription");
 
 		// Add Homepage
-		addRepoTextRow(projectsList, dataModel, repos, "link", "Homepage", "getHomePage");
+		addRepoTextRow(projectsList, dataModel, repos, "link", "Home page", "getHomePage");
 
+		// Add Github page
+		addRepoTextRow(projectsList, dataModel, repos, "link", "Github page", "getHtmlUrl");
+
+		// Clone URL
+		addRepoTextRow(projectsList, dataModel, repos, "text", "Clone URL", "getCloneUrl");
+		
 		// Language
 		addRepoTextRow(projectsList, dataModel, repos, "text", "Language", "getLanguage");
 
@@ -72,9 +78,6 @@ public class GitstatUIDataService {
 
 		// Updated at
 		addRepoTextRow(projectsList, dataModel, repos, "text", "Updated", "getUpdatedAt");
-
-		// Clone URL
-		addRepoTextRow(projectsList, dataModel, repos, "link", "Clone URL", "getCloneUrl");
 
 		// Fork Count
 		addRepoTextRow(projectsList, dataModel, repos, "number", "Forks", "getForksCount");

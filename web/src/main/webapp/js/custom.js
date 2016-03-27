@@ -9,7 +9,7 @@ var loadData = function() {
 	var response = (function() {
 		var response = null;
 		// var data_url = "http://localhost/data.json";
-		var data_url = "/gitstat/rest/ui/data?p="
+		var data_url = "rest/ui/data?p="
 				+ encodeURIComponent($("#p1").val() + "," + $("#p2").val());
 		$('#loading-indicator').show();
 		$.ajax({
@@ -82,10 +82,7 @@ var loadData = function() {
 							x : {
 								type : 'timeseries',
 								tick : {
-									format : function(x) {
-										return x.getMonth() + 1 + "/"
-												+ x.getDay() + 1;
-									},
+									format : '%d-%b-%Y',
 									count : 5,
 									culling : {
 										max : 5
@@ -115,6 +112,11 @@ var loadData = function() {
 						},
 						legend : {
 							show : true
+						},
+						donut : {
+							label : {
+								show : false
+							}
 						},
 						data : cell.data.ts_values,
 					});

@@ -68,7 +68,7 @@
   "ssh_url": "git@github.com:raks81/go-acousticid.git",
   "clone_url": "https://github.com/raks81/go-acousticid.git",
   "svn_url": "https://github.com/raks81/go-acousticid",
-  "homepage": null,
+  "homepage": "http://example.com",
   "size": 73995,
   "stargazers_count": 1,
   "watchers_count": 1,
